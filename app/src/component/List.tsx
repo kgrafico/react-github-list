@@ -15,10 +15,6 @@ interface ListType {
   description: String
 }
 
-interface RepoList {
-  classes: Object,
-}
-
 const styles = () => ({
   ulList: {
     listStyleType: 'none',
@@ -54,7 +50,6 @@ function List({ classes }: any) {
   }
 
   const getRepos = debounce(() => {
-    debugger;
     const repoUrl = `https://api.github.com/users/${username}/repos`;
     axios.get(repoUrl).then((responses) => {
       const repos = responses.data.map(({ name, language, html_url, created_at, description }: ListType) => {
