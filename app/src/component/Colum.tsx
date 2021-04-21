@@ -30,9 +30,11 @@ const Column = ({ column: { name, html_url, forks, stargazers_count }, classes }
     return (
         <React.Fragment>
             <a href={`${html_url}`} className={classes.liList}>
+              <li>
                 <div>{name}</div>
                 <div>forks: {forks}</div>
                 <div>Stars: {stargazers_count}</div>
+              </li>
             </a>
         </React.Fragment>
     )
