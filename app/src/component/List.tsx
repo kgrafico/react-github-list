@@ -1,29 +1,28 @@
 import React, { useState } from 'react';
-import { FormControl, InputLabel, FilledInput, Button } from '@material-ui/core';
+import { FormControl, Button, TextField } from '@material-ui/core';
+import Pagination from '@material-ui/lab/Pagination';
 import { withStyles } from "@material-ui/core/styles";
 import axios from 'axios';
 import debounce from 'lodash/debounce';
 import Repo from './Colum';
-import styled from 'styled-components';
-import './List.css';
 
 interface ListType {
   name: String,
-  language: String,
-  html_url: String,
-  created_at: String,
-  description: String
-}
+  forks: String,
+  stargazers_count: String,
+  html_url: String,}
 
 const styles = () => ({
   ulList: {
     listStyleType: 'none',
     margin: '0',
-    padding: '0'
+    padding: '0',
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr'
   },
   content: {
+    padding: '10px',
     width: '100%',
-    height: '100vh',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
@@ -33,14 +32,16 @@ const styles = () => ({
   },
   form: {
     width: '70%'
-  }
+  },
 });
 
 function List({ classes }: any) {
   const [username, setUserName] = useState('');
   const [repos, setRepos] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
-
+  const [showErrorMessage, setshowErrorMessage] = useState(false);
+  const [count, setCount] = useState(0);
+  const [page, setPage] = useState(1);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(event.target.value);
@@ -50,15 +51,30 @@ function List({ classes }: any) {
   }
 
   const getRepos = debounce(() => {
-    const repoUrl = `https://api.github.com/users/${username}/repos`;
-    axios.get(repoUrl).then((responses) => {
-      const repos = responses.data.map(({ name, language, html_url, created_at, description }: ListType) => {
-        return { name, language, html_url, created_at, description };
-      })
-      setRepos(repos)
+    const repoUrl = `https://api.github.com/users/${username}/repos?page=${page}&per_page=10`;
+    const getNumRepo = `https://api.github.com/users/${username}`;
+
+
+    if (username === '') { setErrorMessage('You should add a correct github name'); setshowErrorMessage(true); return}
+
+    axios.get(getNumRepo).then((responses) => {
+      setCount(Math.ceil(responses.data["public_repos"]/10))
     }).catch(error => {
       console.log(`inside getrepos error: ${error}`)
-      setErrorMessage(error.response.statusText)
+      setErrorMessage(error.response.statusText);
+      setshowErrorMessage(true);
+    })
+    axios.get(repoUrl).then((responses) => {
+      const repos = responses.data.map(({ name, html_url, forks, stargazers_count }: ListType) => {
+        return { name, html_url, forks, stargazers_count };
+      })
+      setRepos(repos);
+      setErrorMessage('');
+      setshowErrorMessage(false);
+    }).catch(error => {
+      console.log(`inside getrepos error: ${error}`)
+      setErrorMessage(error.response.statusText);
+      setshowErrorMessage(true);
     })
   })
 
@@ -66,12 +82,11 @@ function List({ classes }: any) {
     <div className={classes.content}>
       <form className={classes.formControl} noValidate autoComplete="off">
         <FormControl className={classes.form} variant="filled">
-          <InputLabel htmlFor="component-filled" aria-label='description'>Github name</InputLabel>
-          <FilledInput id="component-filled" value={username} placeholder="Enter your github username" onChange={handleChange} />
+          <TextField aria-label='github name input' error={showErrorMessage} id="filled-basic" label="Filled" variant="filled" helperText={errorMessage} value={username} placeholder="Enter your github username" onChange={handleChange}  />
           <Button onClick={getRepos}>Get repos</Button>
-          {(repos.length === 0) && <div>{errorMessage}</div>}
+        </FormControl>
           {repos.length > 0 && <ul className={classes.ulList}>{displayRepos()}</ul>}
-      </FormControl>
+          {repos.length > 0 && <Pagination count={count} variant="outlined" color="primary" onChange={(e, p)=>{setPage(p); getRepos()}}/>}
       </form>
     </div>
   );

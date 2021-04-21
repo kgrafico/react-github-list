@@ -11,3 +11,14 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+a:link {text-decoration: none }
+a:hover { background-color: rgb(23 105 170 / 22%); text-decoration: none; border: 0 }
+a:visited {color: white;  font-family: arial; text-decoration: none }
+*{outline:none !important;}*:focus {outline: none !important;} textarea:focus, input:focus{outline: none !important;}	a{text-decoration: none !important;outline: none !important;}
+
+
+.MuiPagination-root {
+  display: flex;
+  justify-content: center;
+}

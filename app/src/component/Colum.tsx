@@ -1,28 +1,40 @@
 import React from 'react';
+import { withStyles } from "@material-ui/core/styles";
 
 interface List {
     column: Items,
+    classes: any
 }
+
 
 interface Items {
   name: String,
-  language: String,
+  forks: String,
   html_url: String,
-  created_at: String,
-  description: String
+  stargazers_count: String
 }
 
-const Column = ({ column: { name, language, html_url, created_at, description } }: List) => {
+const styles = () => ({
+  liList: {
+    display: 'flex',
+    flexDirection: 'column' as 'column',
+    fontSize: 'small',
+    margin: '15px',
+    padding: '10px',
+    border: '0.7px solid white',
+    color: 'white'
+  },
+});
+
+const Column = ({ column: { name, html_url, forks, stargazers_count }, classes }: List) => {
     return (
         <React.Fragment>
-            <li>
-                <div>Name: {name}</div>
-                {language && <div>Language: {language}</div>}
-                {html_url && <div>HTML_Url: {html_url}</div>}
-                {created_at && <div>Created At: {created_at}</div>}
-                {description && <div>Description: {description}</div>}
-            </li>
+            <a href={`${html_url}`} className={classes.liList}>
+                <div>{name}</div>
+                <div>forks: {forks}</div>
+                <div>Stars: {stargazers_count}</div>
+            </a>
         </React.Fragment>
     )
 }
-export default Column;
+export default withStyles(styles)(Column);
