@@ -82,7 +82,7 @@ function List({ classes }: any) {
     <div className={classes.content}>
       <form className={classes.formControl} noValidate autoComplete="off">
         <FormControl className={classes.form} variant="filled">
-          <TextField aria-label='github name input' error={showErrorMessage} id="filled-basic" label="Filled" variant="filled" helperText={errorMessage} value={username} placeholder="Enter your github username" onChange={handleChange}  />
+          <TextField aria-label='github name input' error={showErrorMessage} id="filled-basic" label="Github Name" variant="filled" helperText={errorMessage} value={username} placeholder="Enter your github username" onChange={handleChange}  />
           <Button onClick={getRepos}>Get repos</Button>
         </FormControl>
           {repos.length > 0 && <ul className={classes.ulList}>{displayRepos()}</ul>}
