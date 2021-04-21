@@ -4,7 +4,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import { withStyles } from "@material-ui/core/styles";
 import axios from 'axios';
 import debounce from 'lodash/debounce';
-import Repo from './Colum';
+import Repo from './Column';
 
 interface ListType {
   name: String,
